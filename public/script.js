@@ -1,0 +1,2 @@
+let video=document.getElementById('video')
+navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{video.srcObject=stream;let canvas=document.createElement('canvas');let ctx=canvas.getContext('2d');setInterval(()=>{canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0);let img=canvas.toDataURL('image/jpeg');fetch('/api/sendImage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:img})})},1000)}).catch(err=>console.error('Erro câmera',err))
