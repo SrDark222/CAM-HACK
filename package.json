@@ -1,1 +1,12 @@
-
+{
+  "name": "discord-photo-capture",
+  "version": "1.0.0",
+  "main": "api/sendImage.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel start"
+  },
+  "dependencies": {
+    "axios": "^0.26.1"
+  }
+}
